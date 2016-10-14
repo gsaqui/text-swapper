@@ -10,7 +10,7 @@
   },
 
   "contextMenuItemSelectionLogger": {
-    "message": "Log '%s' to the browser console",
+    "message": "Swap text: '%s'",
     "description": "Title of context menu item that logs the selected text when clicked."
   },
 
