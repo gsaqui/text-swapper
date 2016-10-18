@@ -62,8 +62,8 @@ function Swapper(id, tag)
   // recursively apply word highlighting
   this.hiliteWords = function(node)
   {
-    console.log('coming in here '+node+  ' '+this.getRegex());
-    console.log(node);
+    //console.log('coming in here '+node+  ' '+this.getRegex());
+    //console.log(node);
     if(node === undefined || !node) return;
     if(!matchRegex) return;
     if(skipTags.test(node.nodeName)) return;
@@ -110,7 +110,7 @@ function Swapper(id, tag)
     this.remove();
     if(input === undefined || !input) return;
     if(this.setRegex(input)) {
-      console.log('target node '+targetNode);
+      console.log('target node ', targetNode, input);
       this.hiliteWords(targetNode);
     }
   };

@@ -21,39 +21,40 @@ chrome.contextMenus.create({
   contexts: ["selection"]
 }, onCreated);
 
-
-
-
 /*
 The click event listener, where we perform the appropriate action given the
 ID of the menu item that was clicked.
 */
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
   switch (info.menuItemId) {
-    case "select-text":
-    console.log(tab);
-    console.log('swapping text '+tab.id);
-      chrome.tabs.sendMessage(tab.id, {"type": "select-text", "text": info.selectionText});
-      console.log('message sent');
+    case "select-text":    
+      chrome.storage.local.set({
+        selectedText: info.selectionText
+      }, () => {
+        chrome.runtime.openOptionsPage();  
+      });
       
-      break;
-    
+      //portFromCS.postMessage({"type": "select-text", "text": info.selectionText});      
+      break;    
   }
 });
 
-function notify(message){
-  console.log("background script received message");
-  if(message.type === 'dom-parsing') {
+var portFromCS;
 
-      console.log(message.dom);
-      var swapper = new Swapper(message.dom);
-      
-      swapper.apply('firefox');
-
-  }
+function connected(p) {
+  console.log(p);
+  portFromCS = p;
+  portFromCS.postMessage({greeting: "hi there content script!"});
+  portFromCS.onMessage.addListener(notify);  
 }
 
-/*
-Assign `notify()` as a listener to messages from the content script.
-*/
-chrome.runtime.onMessage.addListener(notify);
+chrome.runtime.onConnect.addListener(connected);
+
+
+function notify(message){
+  console.log('next message in background');
+  console.log(message);
+  if(message.type === 'options-question') {
+      //portFromCS.postMessage({"type": "select-text", "text": 'oh boy'});
+  }
+}

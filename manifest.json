@@ -11,19 +11,22 @@
       "strict_min_version": "48.0"
     }
   },
-
+  "options_ui": {
+      "page": "options.html"
+  },
   "background": {
-    "scripts": ["background.js", "swapper.js"]
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["content.js", "jquery.js"]
     }
   ],
   "permissions": [
     "contextMenus",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   
   "icons": {
