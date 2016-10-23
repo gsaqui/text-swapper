@@ -10,7 +10,6 @@ function onCreated(n) {
   }
 }
 
-
 /*
 Create all the context menu items.
 */
@@ -46,6 +45,8 @@ function connected(p) {
   portFromCS = p;
   portFromCS.postMessage({greeting: "hi there content script!"});
   portFromCS.onMessage.addListener(notify);  
+  // console.log('hi');
+  portFromCS.postMessage({type: "itemsToSwap"});
 }
 
 chrome.runtime.onConnect.addListener(connected);
