@@ -9,6 +9,12 @@ chrome.storage.local.get('swappingText', (res) => {
 
         var tr = document.createElement("tr");
 
+        var hostT = document.createElement('td');
+        hostT.appendChild(document.createTextNode("Host:"));
+
+        var host = document.createElement('td');
+        host.appendChild(document.createTextNode(rows[i].hostname));
+
         var fromT = document.createElement('td');
         fromT.appendChild(document.createTextNode("From:"));
 
@@ -21,6 +27,8 @@ chrome.storage.local.get('swappingText', (res) => {
         var to = document.createElement('td');
         to.appendChild(document.createTextNode(rows[i].to));
 
+        tr.appendChild(hostT);
+        tr.appendChild(host);
         tr.appendChild(fromT);
         tr.appendChild(from);
         tr.appendChild(toT);
@@ -29,9 +37,27 @@ chrome.storage.local.get('swappingText', (res) => {
     };
 });
 
+/**
+* convert a url string into the the hostname by using a little trick of putting it in the dom just so 
+* we can use the js href functions
+*/
+function getHostname(href) {
+    var location = document.createElement("a");
+    location.href = href;
+    // IE doesn't populate all link properties when setting .href with a relative URL,
+    // however .href will return an absolute URL which then can be used on itself
+    // to populate these additional fields.
+    if (location.host == "") {
+      location.href = location.href;
+    }
+    return location.hostname;
+};
+
+
 function saveOptions(e) {
     console.log('calling save', rows);
     rows.push({
+        hostname: document.querySelector('#selected_hostname').value,
         from: document.querySelector('#selected_text').value,
         to: document.querySelector('#swap_text').value
     });
@@ -43,9 +69,9 @@ function saveOptions(e) {
 
 function loadSwappingText() {
   chrome.storage.local.get('selectedText', (res) => {
-    console.log(res);
-    // document.querySelector("#colour").value = res.selectedText || 'Firefox red';
-    document.querySelector('#selected_text').value = res.selectedText;
+    console.log('inside of loadswapping', res);
+    document.querySelector('#selected_text').value = res.selectedText.text;
+    document.querySelector('#selected_hostname').value = getHostname(res.selectedText.hostname);
   });
 }
 

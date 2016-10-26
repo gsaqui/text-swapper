@@ -28,7 +28,9 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
   switch (info.menuItemId) {
     case "select-text":    
       chrome.storage.local.set({
-        selectedText: info.selectionText
+        selectedText: {
+            text : info.selectionText
+         }
       }, () => {
         chrome.runtime.openOptionsPage();  
       });

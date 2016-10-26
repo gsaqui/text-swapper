@@ -1,6 +1,4 @@
 
-
-
 var myPort = chrome.runtime.connect({name:"port-from-cs"});
 
 myPort.onMessage.addListener(function(m) {
@@ -11,6 +9,14 @@ myPort.onMessage.addListener(function(m) {
     chrome.storage.local.get(['swappingText'], function(res){
         console.log('heelo', res);
         if(res.swappingText){
+            let url = document.URL
+            let swappingItems = [];
+            for (var i = 0; i < res.swappingText.length; i++) {
+                    if( url.indexOf(res.swappingText[i].hostname ) >= 0){
+                        swappingItems.push(res.swappingText[i]);    
+                    }
+                };    
+
             $('*', 'body')
                 .contents()
                 .filter(function(){
@@ -19,9 +25,9 @@ myPort.onMessage.addListener(function(m) {
                 .filter(function(){
                     // Only match when contains 'simple string' anywhere in the text
 
-                    for(var i=0; i< res.swappingText.length; i++){
-                        var text = res.swappingText[i].from;
-                        if(this.nodeValue.indexOf(text) != -1){
+                    for(var i=0; i< swappingItems.length; i++){
+                        var text = swappingItems[i].from;
+                        if(this.nodeValue.toLowerCase().indexOf(text) != -1){
                             return true;
                         }
                     }
@@ -30,11 +36,11 @@ myPort.onMessage.addListener(function(m) {
                 })
                 .each(function(a, b){
                     console.log('here');
-                    for(var i=0; i< res.swappingText.length; i++){
-                        var text = res.swappingText[i].from;
+                    for(var i=0; i< swappingItems.length; i++){
+                        var text = swappingItems[i].from;
 
                         var regexp = new RegExp(text, 'ig');
-                        this.nodeValue = this.nodeValue.replace(regexp, res.swappingText[i].to) ;
+                        this.nodeValue = this.nodeValue.replace(regexp, swappingItems[i].to) ;
                         
                     }
                     
